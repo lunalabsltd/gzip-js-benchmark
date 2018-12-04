@@ -1,0 +1,39 @@
+<html>
+
+<script type="text/javascript">
+	const NUMBER_OF_RUNS = 1000;
+
+	const benchmark = async (url) => {
+	    let totalSeconds = 0.0;
+	    let cacheBuster = new Date().getTime();
+
+	    for(var i = 0; i < NUMBER_OF_RUNS; i++) {
+	        const start = new Date();
+	        const response = await fetch(url + "?t=" + cacheBuster++);
+	        const end = new Date();
+
+	        totalSeconds += (end - start);
+	    }
+
+	    return totalSeconds / NUMBER_OF_RUNS;
+	}
+
+	window.test_gzip = () => {
+		benchmark( '/gzip/medium.json' ).then(ms => {
+    		alert("gzip avg over " + NUMBER_OF_RUNS + " runs: " + ms + "ms");
+		})
+	}
+
+	window.test_no_gzip = () => {
+		benchmark( '/nogzip/medium.json' ).then(ms => {
+    		alert("no gzip avg over " + NUMBER_OF_RUNS + " runs: " + ms + "ms");
+		})
+	}
+</script>
+
+<body>
+	<button onclick="test_gzip()">Test gzip</button>
+	<button onclick="test_no_gzip()">Test no gzip</button>
+</body>
+
+</html>
